@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<!--
+   python3 -m http.server 8002
+-->
+
+<!--
+   [Good Fonts for Dyslexia](http://dyslexiahelp.umich.edu/sites/default/files/good_fonts_for_dyslexia_study.pdf)
+   [Good Fonts for Dyslexia – An Experimental Study](https://blog.dyslexia.com/good-fonts-for-dyslexia-an-experimental-study/#.UtRUdFVX_Ww)
+   [Open Dyslexic](https://opendyslexic.org/)
+   [Slackey Font](https://fonts.google.com/specimen/Slackey?selection.family=Slackey)
+   [What I intend to be an opensource font for dyslexics and for high readability](https://github.com/antijingoist/open-dyslexic)
+-->
+
+<!--
+    CSS LOADERS
+    http://tobiasahlin.com/spinkit/
+    https://loading.io/css/
+    http://freefrontend.com/css-loaders/
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US" dir="ltr">
+   <head>
+      <title>Non-mots</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <link rel="shortcut icon" type="image/ico" href="/images/favicon.ico">
+
+      <!-- [MIT Licensed](https://jquery.org/license/) -->
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script>window.jQuery || document.write('\x3Cscript src="lib/jquery-2.1.1.min.js">\x3C/script>')</script>
+
+      <!-- [MIT Licensed](https://github.com/vuejs/vuejs.org/blob/master/LICENSE) -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+      <script>window.Vue || document.write('\x3Cscript src="lib/vue-2.6.10.min.js">\x3C/script>')</script>
+
+      <!-- [MIT Licensed](https://github.com/shakee93/vue-toasted/blob/v1.1.24/LICENSE) -->
+      <!--
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-toasted/1.1.24/vue-toasted.js"></script>
+      <script>window.Toasted || document.write('\x3Cscript src="lib/vue-toasted-1.1.24.min.js">\x3C/script>')</script>
+      -->
+
+      <!-- [MIT Licensed](https://github.com/shakee93/vue-toasted/blob/v1.1.24/LICENSE) -->
+      <!--
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js" integrity="sha256-r/vPIUvTobCpYZsMmvU7HM58cNd4D6/vdICqDFapV7Y=" crossorigin="anonymous"></script>
+      <script>window.Toasted || document.write('\x3Cscript src="lib/vue-router-3.1.3.min.js">\x3C/script>')</script>
+      -->
+
+      <!-- [How to fallback to local stylesheet (not script) if CDN fails](https://stackoverflow.com/a/7452378) -->
+      <!-- [Material Icons Guide](https://google.github.io/material-design-icons/) -->
+      <!--
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vue-toasted/1.1.24/vue-toasted.min.css" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+      -->
+
+      <!--
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
+      <link rel="stylesheet" href="tabs-component.css">
+      -->
+
+      <link href="https://fonts.googleapis.com/css?family=Slackey&display=swap" rel="stylesheet"> 
+      <link href="https://cdn.clarkhacks.com/OpenDyslexic/v3/OpenDyslexic.css" rel="stylesheet"> 
+
+   </head>
+
+   <body>
+
+      <H1>Non Mots</H1>
+      <section id="nonmot_app">
+         <div>
+            <span id="nonmot" style="font-size: 6em;"> {{nonmot}} </span>
+            <span id="nonmot" style="font-size: 6em; font-family: 'Slackey', cursive;"> {{nonmot}} </span>
+            <span id="nonmot" style="font-size: 6em; font-family: 'OpenDyslexic';"> {{nonmot}} </span>
+         </div>
+         <div>
+            <input v-model="consonnes"> </input>
+            <input v-model="voyelles"> </input>
+            <input v-model="sons_amoureux"> </input>
+            <input v-model="max_number"> </input>
+         </div>
+         <button
+            name=".defaults"
+            title="Creer le prochain non mot."
+            @click="creer_nonmot"
+            accesskey="c">Suivant</button>
+      </section>
+
+      <script type="text/javascript">
+         var nonmot_app = new Vue({
+            el: '#nonmot_app',
+
+            data: {
+               nonmot: 'non mot test',
+               consonnes: [ 'b', 'd', 'p', 'm' ],
+               voyelles: ['a', 'e', 'i', 'o', 'u', 'y', 'é' ],
+               sons_amoureux: [ 'ou' ],
+               max_number: 30,
+               generators: [],
+            },
+
+            // On page loaded...
+            mounted: function() {
+               const app = this;
+               console.log('Non mot a ete mounte');
+               // We can only populate generators once the main object has been created.
+               app.generators = [
+                  app._random_mot_cv_cv,
+                  app._random_mot_cvc_cvc,
+                  app._random_number,
+               ];
+               app.creer_nonmot();
+            },
+
+
+            methods: {
+               creer_nonmot: function() {
+                  const app = this;
+                  app.nonmot = app._sample(app.generators)();
+               },
+
+               _sample: function(distribution) {
+                  return distribution[Math.floor(Math.random() * distribution.length)];
+               },
+
+               _random_number: function() {
+                  const app = this;
+                  return Math.floor(Math.random() * app.max_number);
+               },
+
+               _random_mot_cv_cv: function() {
+                  const app = this;
+                  return app._random_consonne_voyelle() + app._random_consonne_voyelle();
+               },
+
+               _random_mot_cvc_cvc: function() {
+                  const app = this;
+                  return app._random_consonne_voyelle_consonne() + app._random_consonne_voyelle_consonne();
+               },
+
+               _random_consonne_voyelle: function() {
+                  const app = this;
+                  return app._random_consonne() + app._random_voyelle();
+               },
+
+               _random_consonne_voyelle_consonne: function() {
+                  const app = this;
+                  return app._random_consonne() + app._random_voyelle() + app._random_consonne();
+               },
+
+               _random_consonne: function() {
+                  const app = this;
+                  return app._sample(app.consonnes);
+               },
+
+               _random_voyelle: function() {
+                  const app = this;
+                  return app._sample(app.voyelles);
+               },
+
+            },  // methods
+
+
+            watch: {
+               consonnes: function (val, oldVal) {
+                  const app = this;
+                  val = val.split(',').filter(e => e != '');
+                  console.log(`Les consonnes ont changees ${oldVal} to ${val}`);
+                  app.consonnes = val;
+                  //localStorage.setObject('consonnes', val);
+               },
+            },
+         });
+      </script>
+
+   </body>
+</html>
