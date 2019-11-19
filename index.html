@@ -71,24 +71,28 @@
 
    <body>
 
-      <H1>Non Mots</H1>
+      <H1>Non-Mots</H1>
       <section id="nonmot_app">
          <div>
             <span id="nonmot" style="font-size: 6em;"> {{nonmot}} </span>
+            <!--
             <span id="nonmot" style="font-size: 6em; font-family: 'Slackey', cursive;"> {{nonmot}} </span>
             <span id="nonmot" style="font-size: 6em; font-family: 'OpenDyslexic';"> {{nonmot}} </span>
-         </div>
-         <div>
-            <input v-model="consonnes"> </input>
-            <input v-model="voyelles"> </input>
-            <input v-model="sons_amoureux"> </input>
-            <input v-model="max_number"> </input>
+            -->
          </div>
          <button
             name=".defaults"
             title="Creer le prochain non mot."
             @click="creer_nonmot"
             accesskey="c">Suivant</button>
+         <div>
+            <ul>
+               <li><input v-model="consonnes"> </input></li>
+               <li><input v-model="voyelles"> </input></li>
+               <li><input v-model="sons_amoureux"> </input></li>
+               <li><input v-model="max_number"> </input></li>
+            </ul>
+         </div>
       </section>
 
       <script type="text/javascript">
