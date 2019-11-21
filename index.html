@@ -73,6 +73,7 @@
 
       <H1>Non-Mots</H1>
       <section id="nonmot_app">
+
          <div>
             <span id="nonmot" style="font-size: 6em;"> {{nonmot}} </span>
             <!--
@@ -80,11 +81,13 @@
             <span id="nonmot" style="font-size: 6em; font-family: 'OpenDyslexic';"> {{nonmot}} </span>
             -->
          </div>
+
          <button
             name=".defaults"
             title="Creer le prochain non mot."
             @click="creer_nonmot"
             accesskey="c">Suivant</button>
+
          <div>
             <ul>
                <li><input v-model="consonnes"> </input></li>
@@ -93,6 +96,16 @@
                <li><input v-model="max_number"> </input></li>
             </ul>
          </div>
+
+         <div>
+            <ul>
+               <li><input type="checkbox" @click="update_generators" v-model="use.mot_cv_cv"> consonne-voyelle consonne-voyelle </input></li>
+               <li><input type="checkbox" @click="update_generators" v-model="use.mot_cvc_cvc"> consonne-voyelle-consonne consonne-voyelle-consonne </input></li>
+               <li><input type="checkbox" @click="update_generators" v-model="use.nombre"> nombre </input></li>
+               <li><input type="checkbox" @click="update_generators" v-model="use.vocabulaire"> vocabulaire </input></li>
+            </ul>
+         </div>
+
       </section>
 
       <script type="text/javascript">
@@ -115,6 +128,12 @@
                        'lundi', 'mardi', 'jeudi', 'midi',
                        ],
                max_number: 30,
+               use: {
+                  mot_cv_cv: true,
+                  mot_cvc_cvc: true,
+                  nombre: true,
+                  vocabulaire: true,
+               },
                generators: [],
             },
 
@@ -123,20 +142,26 @@
                const app = this;
                console.log('Non mot a ete mounte');
                // We can only populate generators once the main object has been created.
-               app.generators = [
-                  app._random_mot_cv_cv,
-                  app._random_mot_cvc_cvc,
-                  app._random_number,
-                  app._random_vocabulaire,
-               ];
+               app.update_generators();
                app.creer_nonmot();
             },
 
 
             methods: {
+               update_generators: function() {
+                  const app = this;
+                  app.generators.length = 0;
+                  if (app.use.mot_cv_cv) app.generators.push(app._random_mot_cv_cv);
+                  if (app.use.mot_cvc_cvc) app.generators.push(app._random_mot_cvc_cvc);
+                  if (app.use.nombre) app.generators.push(app._random_number);
+                  if (app.use.vocabulaire) app.generators.push(app._random_vocabulaire);
+               },
+
                creer_nonmot: function() {
                   const app = this;
-                  app.nonmot = app._sample(app.generators)();
+                  if (app.generators.length > 0) {
+                     app.nonmot = app._sample(app.generators)();
+                  }
                },
 
                _sample: function(distribution) {
